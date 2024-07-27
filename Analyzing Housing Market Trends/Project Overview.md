@@ -14,17 +14,46 @@ Task: Scrape housing listings from a real estate website.
 ```python
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
 
-url = 'https://www.example.com/homes-for-sale'
-response = requests.get(url)
-soup = BeautifulSoup(response.text, 'html.parser')
+# Define the URL
+url = 'https://www.realtor.com/realestateandhomes-search/San-Francisco_CA'
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+}
 
+# Fetch the page content
+response = requests.get(url, headers=headers)
+soup = BeautifulSoup(response.content, 'html.parser')
+
+# Extract data
 listings = []
-for listing in soup.find_all('div', class_='listing'):
-    price = listing.find('span', class_='price').text
-    address = listing.find('span', class_='address').text
-    details = listing.find('span', class_='details').text
-    listings.append({'price': price, 'address': address, 'details': details})
+for listing in soup.find_all('div', class_='CardContent__StyledCardContent-rui__sc-7ptz1z-0 kDqsxy card-content card-content'):
+    price = listing.find('div', class_='Pricestyles__StyledPrice-rui__btk3ge-0 kjbIiZ card-price')
+    house_type = listing.find('div', class_='base__StyledType-rui__sc-108xfm0-0 hRTvWe message')
+    # details = listing.find('ul', class_='PropertyMetastyles__StyledPropertyMeta-rui__sc-1g5rdjn-0 iQEvdK card-meta')
+    bed = listing.find('li', class_='PropertyBedMetastyles__StyledPropertyBedMeta-rui__a4nnof-0 jkAoUn')
+    bath = listing.find('li', class_='PropertyBathMetastyles__StyledPropertyBathMeta-rui__sc-67m6bo-0 hGQdFx') 
+    squareFeet = listing.find('li', class_='PropertySqftMetastyles__StyledPropertySqftMeta-rui__sc-1gdau7i-0 cYyTDO')
+    address = listing.find('div', class_='card-address truncate-line')
+
+    # Check if elements are found and extract text
+    price_amount = price.text.strip() if price else 'N/A'
+    house_type_text = house_type.text.strip().split()[0] if house_type else 'N/A'
+    bed_text = bed.text.strip().split('bed')[0] if bed else 'N/A'
+    bath_text = bath.text.strip().split('bath')[0] if bath else 'N/A'
+    squareFeet_text = squareFeet.text.strip().split('sqft')[0] if squareFeet else 'N/A'
+    address_text = address.text.strip() if address else 'N/A'
+
+    # Append data to listings
+    listings.append({
+        'Price': price_amount,
+        'House type': house_type_text,
+        'Number of bedrooms': bed_text,
+        'Number of bathrooms': bath_text,
+        'Square Feet': squareFeet_text,
+        'Property Address': address_text
+    })
 ```
 
 ## Step 2: Cleaning Data
@@ -34,18 +63,35 @@ Task: Clean the scraped data.
 
 1. Load data into a DataFrame:
 ```python
-import pandas as pd
+# Print the listings to debug
+print(listings)
 
+# Create a DataFrame
 df = pd.DataFrame(listings)
 ```
 
-2. Clean data: Remove duplicates, handle missing values, and standardize formats.
+2. Save the DataFrame to Excel:
 ```python
-df.drop_duplicates(inplace=True)
-df['price'] = df['price'].str.replace('$', '').str.replace(',', '').astype(float)
-df['details'] = df['details'].str.split(', ')
-df[['beds', 'baths', 'sqft']] = pd.DataFrame(df['details'].tolist(), index=df.index)
-df.drop(columns=['details'], inplace=True)
+# Save DataFrame to Excel
+df.to_excel('housing_data.xlsx', index=False)
+```
+
+3. Clean data: Remove handle missing values, remove currency symbol in price column to perform calculations:
+```python
+# Clean the 'Price' column to convert the 'Price' column from a string to a numeric format by removing the currency ($) symbol and commas
+def clean_price(price):
+    if isinstance(price, str):
+        price = price.replace('$', '').replace(',', '')
+        try:
+            return float(price)
+        except ValueError:
+            return None
+    return None
+
+df['Price'] = df['Price'].apply(clean_price)
+
+# Drop rows with None values in the 'Price' column to remove rows where the 'Price' column couldn't be converted to a numeric value.
+df = df.dropna(subset=['Price'])
 ```
 
 
@@ -58,9 +104,17 @@ Task: Perform different types of analysis.
 `df.describe()`
 
 2. Diagnostic Analysis: Identify patterns and anomalies.
-`df.groupby('address')['price'].mean().plot(kind='bar')`
+```python
+# Diagnostic analysis to identify patterns and anomalies.
+df.groupby('Property Address')['Price'].mean().plot(kind='bar')
+plt.xlabel('Property Address')
+plt.ylabel('Mean Price')
+plt.title('Mean Price per Property Address')
+# plt.xticks(rotation=90)  # Rotate x-axis labels if needed
+plt.show()
+```
 
-3. Predictive Analysis: Predict future prices using machine learning.
+<!-- 3. Predictive Analysis: Predict future prices using machine learning.
 ```python
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
@@ -72,10 +126,20 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model = LinearRegression()
 model.fit(X_train, y_train)
 predictions = model.predict(X_test)
-```
+``` -->
 
 4. Prescriptive Analysis: Recommend investment opportunities.
-`recommendations = df[df['price'] < df['price'].quantile(0.25)]`
+```python
+# Calculate and print quantiles
+quantile_25 = df['Price'].quantile(0.25)
+print(f"25th percentile value: {quantile_25}")
+
+# Perform prescriptive analysis to recommend investment opportunities.
+recommendations = df[df['Price'] < quantile_25]
+
+# Print the filtered recommendations
+print(recommendations)
+```
 
 
 ## Step 4: Visualizing Data using Python
@@ -88,7 +152,7 @@ Task: Create visualizations to tell a story.
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-sns.histplot(df['price'])
+sns.histplot(df['Price'])
 plt.title('Price Distribution')
 plt.xlabel('Price')
 plt.ylabel('Frequency')
@@ -98,10 +162,21 @@ plt.show()
 2. Geographical Distribution (using Plotly):
 ```python
 import plotly.express as px
+import pandas as pd
 
+# Sample data
+df = pd.DataFrame({
+    'latitude': [37.7749, 37.8049],
+    'longitude': [-122.4194, -122.2711],
+    'price': [1000000, 800000]
+})
+
+# Create a scatter mapbox plot
 fig = px.scatter_mapbox(df, lat='latitude', lon='longitude', color='price', size='price',
                         color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10)
 fig.update_layout(mapbox_style="carto-positron")
+# fig.update_layout(mapbox_style="open-street-map")
+fig.update_layout(mapbox=dict(center=dict(lat=df['latitude'].mean(), lon=df['longitude'].mean()), zoom=10))
 fig.show()
 ```
 

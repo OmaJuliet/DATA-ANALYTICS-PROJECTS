@@ -4,8 +4,6 @@
 1. What was the total number of confirmed cases and confirmed deaths in the world?
 2. Which countries had the highest number of confirmed cases and confirmed Deaths across the world?
 3. At what rate did COVID-19 spread across all the continents in the world?
-4. How did Covid-19 affect countries based on population?
-5. How did Covid-19 spread trend from 2020 to 2023?
 
 
 ## STEP 1: DATA COLLECTION

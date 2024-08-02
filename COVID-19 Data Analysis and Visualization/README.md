@@ -52,3 +52,5 @@ plt.show()
 
 - Interactive elements: Add slicers for continents, countries, and other relevant filters.
 - Save report and publish to Power BI Service
+
+![Report Dashboard](covid-19.png) 

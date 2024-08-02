@@ -1,11 +1,12 @@
 # GLOBAL SALARY DATA ANALYSIS
 
+## PROJECT OVERVIEW
 Analysis carried using data source from Kaggle (https://www.kaggle.com/datasets/zedataweaver/global-salary-data) for reference.
 
 ## Questions to be answered from the analysis and visualization
-1. What was the total number of confirmed cases and confirmed deaths in the world?
-2. Which countries had the highest number of confirmed cases and confirmed Deaths across the world?
-3. At what rate did COVID-19 spread across all the continents in the world?
+1. What are the top countries with the highest and lowest average salary earned by individuals according to the data set?
+2. What is highest to lowest average salary earned by individuals per continent?
+3. What are the countries with the highest and lowest salary earned in each continent?
 
 
 ## STEP 1: DATA COLLECTION
@@ -44,6 +45,8 @@ Data was collected from Kaggle website at (https://www.kaggle.com/datasets/imdev
 - - Spread Rate Across Continents: Create a line chart or area chart showing the rate of spread across different continents.
 
 - Saved report and publish to Power BI Service
+
+![Report Dashboard](global-salary.png) 
 
 
 ## STEP 6: DATA STORYTELLING

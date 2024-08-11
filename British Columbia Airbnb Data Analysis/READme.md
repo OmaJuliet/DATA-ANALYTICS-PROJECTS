@@ -38,27 +38,28 @@ Data was collected from Kaggle website at () as at 29th June, 2024
 - Saved cleaned DataFrame as an Excel file
 
 
-## STEP 4: DATA VISUALIZATION USING TABLEAU
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-
-
-
-## STEP 5: DATA VISUALIZATION USING POWER BI
+## STEP 4: DATA VISUALIZATION USING POWER BI
 - Imported cleaned data into Power BI
 - Used visuals to answer the above questions
-- - Total Confirmed Cases and Deaths: Create a card visualization showing the total confirmed cases and deaths.
-- - Top Countries by Cases and Deaths: Create bar charts or tables showing the top 10 countries by confirmed cases and deaths.
-- - Spread Rate Across Continents: Create a line chart or area chart showing the rate of spread across different continents.
+- - Average Price of Airbnb Listings Across Different Neighborhoods
+- - How Does Room Type Affect Pricing?
+- - Which Hosts Have the Most Listings in Victoria?
+- - Most Expensive Airbnb Listings Located in Victoria?
 
 - Saved report and publish to Power BI Service
 
-![Report Dashboard](global-salary.png) 
+![Report Dashboard](airbnb-listings.png) 
+
+
+## STEP 5: DATA VISUALIZATION USING TABLEAU
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+
 
 
 ## STEP 6: DATA STORYTELLING

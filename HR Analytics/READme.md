@@ -18,3 +18,8 @@ In this project, I utilized Power BI to analyze HR data and create an interactiv
 8. Employee Ratings: Highlighted high- and low-rated employees.
 
 This project emphasizes how to utilize Power BI’s interactive features and advanced data modeling to derive actionable HR insights and visualiza them.
+
+
+### Dashboard:
+
+![HR Dashboard](hr-analytics-dashboard.png) 
